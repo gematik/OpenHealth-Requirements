@@ -1,4 +1,4 @@
-_# OpenHealth Requirements
+# OpenHealth Requirements
 
 ## ✨ Overview
 OpenHealth Requirements scans source files for structured requirement annotations and extracts them into a structured CSV file. It is available as both a **Gradle plugin** and a **standalone CLI executable**.
