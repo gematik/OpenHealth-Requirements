@@ -15,7 +15,7 @@ class RequirementExtractor {
     private val startTag = "REQ-BEGIN"
     private val endTag = "REQ-END"
 
-    fun extractRequirements(fileParameter: Sequence<Pair<String, String>>): List<Requirement> {
+    fun extractRequirements(fileParameter: Sequence<Pair<String, String>>, commentPrefix: String): List<Requirement> {
         val requirements = mutableListOf<Requirement>()
         val requirementsWithStart = mutableMapOf<String, Int>()
         val requirementsWithEnd = mutableMapOf<String, Int>()
@@ -207,7 +207,7 @@ class RequirementExtractor {
         val trimmed = this.trim()
 
         val commentPrefixes = listOf(
-            "//", "#", ";", "--", "%", "!", "'", "*", "/*", "\"\"\"", "'''", "=begin", "<!--"
+            "//", "#", "--", "%", "!", "'", "*", "/*", "\"\"\"", "'''", "=begin",
         )
 
         for (prefix in commentPrefixes) {
