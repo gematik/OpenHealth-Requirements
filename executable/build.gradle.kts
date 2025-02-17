@@ -1,6 +1,7 @@
 plugins {
     application
-    alias(libs.plugins.kotlinMultiplatform) apply false
+    alias(libs.plugins.kotlin.jvm)
+
 }
 
 application {

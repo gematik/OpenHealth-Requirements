@@ -14,7 +14,7 @@ class RequirementExtractorTest {
             ...
         """.trimIndent()
 
-        val requirements = extractor.extractRequirements(sequenceOf(Pair(source, "path")))
+        val requirements = extractor.extractRequirements(sequenceOf(Pair(source, "path")), "//")
 
         assertEquals(0, requirements.size)
     }
@@ -33,7 +33,7 @@ class RequirementExtractorTest {
             // REQ-END: GS-A_1234
 
         """.trimIndent()
-        val requirements = extractor.extractRequirements(sequenceOf(Pair(source, "path")))
+        val requirements = extractor.extractRequirements(sequenceOf(Pair(source, "path")), "//")
 
         assertEquals(1, requirements.size)
         val requirement = requirements.first()
@@ -61,7 +61,7 @@ class RequirementExtractorTest {
                 return c
             }
         """.trimIndent()
-        val requirements = extractor.extractRequirements(sequenceOf(Pair(source, "path")))
+        val requirements = extractor.extractRequirements(sequenceOf(Pair(source, "path")), "//")
 
         assertEquals(1, requirements.size)
         val requirement = requirements.first()
@@ -90,7 +90,7 @@ class RequirementExtractorTest {
             
         """.trimIndent()
 
-        val requirements = extractor.extractRequirements(sequenceOf(Pair(source, "path")))
+        val requirements = extractor.extractRequirements(sequenceOf(Pair(source, "path")), "//")
 
         assertEquals(2, requirements.size)
 
@@ -127,7 +127,7 @@ class RequirementExtractorTest {
             // REQ-END: GS-A_5678,   GS-A_91011,  GS-A_121314, GS-A_151617,   GS-A_181920
             
         """.trimIndent()
-        val requirements = extractor.extractRequirements(sequenceOf(Pair(source, "path")))
+        val requirements = extractor.extractRequirements(sequenceOf(Pair(source, "path")), "//")
 
         assertEquals(6, requirements.size)
 
@@ -191,7 +191,7 @@ class RequirementExtractorTest {
             // REQ-END: GS-A_91011
         """.trimIndent()
 
-        val requirements = extractor.extractRequirements(sequenceOf(Pair(source, "path")))
+        val requirements = extractor.extractRequirements(sequenceOf(Pair(source, "path")), "//")
 
         assertEquals(1, requirements.size)
         val requirement = requirements.first()
@@ -224,7 +224,7 @@ class RequirementExtractorTest {
             // REQ-END: GS-A_91011
         """.trimIndent()
 
-        val requirements = extractor.extractRequirements(sequenceOf(Pair(source, "path")))
+        val requirements = extractor.extractRequirements(sequenceOf(Pair(source, "path")), "//")
 
         assertEquals(1, requirements.size)
         val requirement = requirements.first()
@@ -260,7 +260,7 @@ class RequirementExtractorTest {
             // REQ-END: GS-A_5678
         """.trimIndent()
 
-        val requirements = extractor.extractRequirements(sequenceOf(Pair(source, "path")))
+        val requirements = extractor.extractRequirements(sequenceOf(Pair(source, "path")), "//")
 
         assertEquals(2, requirements.size)
 
@@ -286,7 +286,7 @@ class RequirementExtractorTest {
             // REQ-END: GS-A_1234
         """.trimIndent()
 
-        val requirements = extractor.extractRequirements(sequenceOf(Pair(source, "path")))
+        val requirements = extractor.extractRequirements(sequenceOf(Pair(source, "path")), "//")
 
         assertEquals(0, requirements.size)
     }
@@ -300,7 +300,7 @@ class RequirementExtractorTest {
             fun exampleFunction1() = println("Hello, world!")
         """.trimIndent()
 
-        val requirements = extractor.extractRequirements(sequenceOf(Pair(source, "path")))
+        val requirements = extractor.extractRequirements(sequenceOf(Pair(source, "path")), "//")
 
         assertEquals(0, requirements.size)
     }

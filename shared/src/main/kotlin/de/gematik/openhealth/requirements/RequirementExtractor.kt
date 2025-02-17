@@ -14,8 +14,10 @@ data class Requirement(
 class RequirementExtractor {
     private val startTag = "REQ-BEGIN"
     private val endTag = "REQ-END"
+    private var prefix = "//"
 
     fun extractRequirements(fileParameter: Sequence<Pair<String, String>>, commentPrefix: String): List<Requirement> {
+        prefix = commentPrefix.trim()
         val requirements = mutableListOf<Requirement>()
         val requirementsWithStart = mutableMapOf<String, Int>()
         val requirementsWithEnd = mutableMapOf<String, Int>()
@@ -172,10 +174,7 @@ class RequirementExtractor {
 
     private fun String.isCommentLine(): Boolean {
         val trimmedLine = this.trim()
-        val commentPrefixes = listOf(
-            "/", "#", "--", "%", "!", "'", "*", "\"", "<"
-        )
-        return commentPrefixes.any { trimmedLine.startsWith(it) }
+        return trimmedLine.startsWith(prefix)
     }
 
     private fun String.isCommentLineWithControlPrefix(): Boolean {
@@ -205,16 +204,9 @@ class RequirementExtractor {
 
     private fun String.removeCommentPrefix(): String {
         val trimmed = this.trim()
-
-        val commentPrefixes = listOf(
-            "//", "#", "--", "%", "!", "'", "*", "/*", "\"\"\"", "'''", "=begin",
-        )
-
-        for (prefix in commentPrefixes) {
             if (trimmed.startsWith(prefix)) {
                 return trimmed.removePrefix(prefix).trim()
             }
-        }
         return this
     }
 
