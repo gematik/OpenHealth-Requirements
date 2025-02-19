@@ -10,4 +10,5 @@ application {
 
 dependencies {
     implementation(project(":shared"))
+    implementation(libs.kotlin.clikt)
 }
