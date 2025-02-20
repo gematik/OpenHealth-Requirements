@@ -7,6 +7,7 @@ import org.gradle.api.Project
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.Optional
 import org.gradle.api.tasks.TaskAction
+import java.io.File
 
 class RequirementExtractorPlugin : Plugin<Project> {
     override fun apply(project: Project) {
@@ -28,12 +29,15 @@ abstract class ExtractRequirementsTask : DefaultTask() {
     @Optional
     var outputFile: String = project.findProperty("requirementOutputFile") as? String ?: "requirements.csv"
 
+    private val rootPath: File = project.rootDir
+    private val filesToScan: Set<File> = project.fileTree(scanDirectory).files
+
     @TaskAction
     fun run() {
         val extractor = RequirementExtractor()
 
-        val files = project.fileTree(scanDirectory).map { file ->
-            file.readText() to file.absolutePath
+        val files = filesToScan.map { file ->
+            file.readText() to file.relativeTo(rootPath).path
         }.asSequence()
 
         val requirements = extractor.extractRequirements(files, commentPrefix)

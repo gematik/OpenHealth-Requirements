@@ -1,8 +1,8 @@
 
 plugins {
     alias(libs.plugins.kotlin.jvm)
+    `maven-publish`
 }
-
 kotlin {
 
     sourceSets {
@@ -16,5 +16,19 @@ kotlin {
                 implementation(libs.kotlin.test)
             }
         }
+    }
+}
+
+publishing {
+    publications {
+        create<MavenPublication>("mavenJava") {
+            from(components["java"])
+            groupId = "de.gematik.openhealth.requirements"
+            artifactId = "shared"
+            version = "1.0.0"
+        }
+    }
+    repositories {
+        mavenLocal()
     }
 }

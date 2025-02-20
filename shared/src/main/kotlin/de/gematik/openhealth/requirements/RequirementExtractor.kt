@@ -19,12 +19,13 @@ class RequirementExtractor {
     fun extractRequirements(fileParameter: Sequence<Pair<String, String>>, commentPrefix: String): List<Requirement> {
         prefix = commentPrefix.trim()
         val requirements = mutableListOf<Requirement>()
-        val requirementsWithStart = mutableMapOf<String, Int>()
-        val requirementsWithEnd = mutableMapOf<String, Int>()
-        val requirementsWithSpec = mutableMapOf<String, String>()
-        val requirementsWithDesc = mutableMapOf<String, String>()
 
         fileParameter.forEach { (content, path) ->
+            val requirementsWithStart = mutableMapOf<String, Int>()
+            val requirementsWithEnd = mutableMapOf<String, Int>()
+            val requirementsWithSpec = mutableMapOf<String, String>()
+            val requirementsWithDesc = mutableMapOf<String, String>()
+
             val lines = content.lines()
             val beginLineIndices = mutableListOf<Int>()
             val endLineIndices = mutableListOf<Int>()
@@ -211,7 +212,9 @@ class RequirementExtractor {
     }
 
     fun writeToCsv(requirements: List<Requirement>, outputFilePath: String) {
-        csvWriter().open(outputFilePath) {
+        csvWriter {
+            delimiter = ';'
+        }.open(outputFilePath) {
             writeRow(listOf("Requirement ID", "Specification", "Description", "File Path", "Start Line", "End Line"))
             requirements.forEach {
                 writeRow(listOf(it.reqId, it.spec, it.desc, it.filePath, it.startLine, it.endLine))

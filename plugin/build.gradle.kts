@@ -10,6 +10,7 @@ gradlePlugin {
         create("requirementExtractorPlugin") {
             id = "de.gematik.openhealth.requirements.plugin"
             implementationClass = "de.gematik.openhealth.requirements.plugin.RequirementExtractorPlugin"
+            version = "1.0.0"
         }
     }
 }
