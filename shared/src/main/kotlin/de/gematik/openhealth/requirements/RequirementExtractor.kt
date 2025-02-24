@@ -1,3 +1,19 @@
+/*
+ * Copyright 2025 gematik GmbH
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package de.gematik.openhealth.requirements
 
 import com.github.doyaaaaaken.kotlincsv.dsl.csvWriter
@@ -8,7 +24,7 @@ data class Requirement(
     val desc: String,
     val filePath: String,
     val startLine: Int?,
-    val endLine: Int?
+    val endLine: Int?,
 )
 
 class RequirementExtractor {
@@ -16,7 +32,10 @@ class RequirementExtractor {
     private val endTag = "REQ-END"
     private var prefix = "//"
 
-    fun extractRequirements(fileParameter: Sequence<Pair<String, String>>, commentPrefix: String): List<Requirement> {
+    fun extractRequirements(
+        fileParameter: Sequence<Pair<String, String>>,
+        commentPrefix: String,
+    ): List<Requirement> {
         prefix = commentPrefix.trim()
         val requirements = mutableListOf<Requirement>()
 
@@ -64,7 +83,7 @@ class RequirementExtractor {
 
     private fun mapStartPositions(
         lines: List<String>,
-        beginLineIndex: Int
+        beginLineIndex: Int,
     ): Map<String, Int> {
         val requirementsWithStart = mutableMapOf<String, Int>()
         val requirementsInFile = lines[beginLineIndex].splitByColonAndMapCommaSeparatedValues().toMutableList()
@@ -73,9 +92,9 @@ class RequirementExtractor {
         for (i in beginLineIndex + 1 until lines.size) {
             val line = lines[i].trim()
 
-            if (line.isCommentLine() && !line.hasControlPrefix()) {
-                requirementsInFile.addAll(line.removeCommentPrefix().trim().mapCommaSeparatedValues())
-            } else if (line.isNotEmpty() && !line.isCommentLine()) {
+            if (line.isCommentLine(prefix) && !line.hasControlPrefix()) {
+                requirementsInFile.addAll(line.removeCommentPrefix(prefix).trim().mapCommaSeparatedValues())
+            } else if (line.isNotEmpty() && !line.isCommentLine(prefix)) {
                 firstNonCommentLineIndex = i
                 break
             }
@@ -89,7 +108,7 @@ class RequirementExtractor {
 
     private fun mapEndPositions(
         lines: List<String>,
-        endLineIndex: Int
+        endLineIndex: Int,
     ): Map<String, Int> {
         val requirementsWithEnd = mutableMapOf<String, Int>()
         var lastNonCommentLineIndex: Int? = null
@@ -97,7 +116,7 @@ class RequirementExtractor {
         for (i in endLineIndex - 1 downTo 0) {
             val line = lines[i].trim()
 
-            if (line.isNotEmpty() && !line.isCommentLine()) {
+            if (line.isNotEmpty() && !line.isCommentLine(prefix)) {
                 lastNonCommentLineIndex = i
                 break
             }
@@ -112,16 +131,16 @@ class RequirementExtractor {
 
     private fun mapRequirementSpecifications(
         lines: List<String>,
-        beginLineIndex: Int
+        beginLineIndex: Int,
     ): Map<String, String> {
         val requirementsWithSpec = mutableMapOf<String, String>()
         val requirementsInFile = lines[beginLineIndex].splitByColonAndMapCommaSeparatedValues().toMutableList()
 
         for (i in beginLineIndex + 1 until lines.size) {
             val line = lines[i].trim()
-            extractAdditionalRequirements(line, requirementsInFile)
-            if (line.isCommentLine() && line.hasControlPrefix()) {
-                val specification = line.removeCommentAndControlPrefix()
+            extractAdditionalRequirements(line, requirementsInFile, prefix)
+            if (line.isCommentLine(prefix) && line.hasControlPrefix()) {
+                val specification = line.removeCommentAndControlPrefix(prefix)
                 requirementsInFile.forEach { requirement ->
                     requirementsWithSpec[requirement] = specification
                 }
@@ -131,9 +150,19 @@ class RequirementExtractor {
         return requirementsWithSpec.toMap()
     }
 
+    private fun extractAdditionalRequirements(
+        line: String,
+        requirementsInFile: MutableList<String>,
+        prefix: String,
+    ) {
+        if (line.isCommentLine(prefix) && !line.hasControlPrefix()) {
+            requirementsInFile.addAll(line.removeCommentPrefix(prefix).trim().mapCommaSeparatedValues())
+        }
+    }
+
     private fun mapRequirementDescriptions(
         lines: List<String>,
-        beginLineIndex: Int
+        beginLineIndex: Int,
     ): Map<String, String> {
         val requirementsWithDesc = mutableMapOf<String, String>()
         val requirementsInFile = lines[beginLineIndex].splitByColonAndMapCommaSeparatedValues().toMutableList()
@@ -144,17 +173,21 @@ class RequirementExtractor {
         for (i in beginLineIndex + 1 until lines.size) {
             val line = lines[i].trim()
 
-            extractAdditionalRequirements(line, requirementsInFile)
+            extractAdditionalRequirements(line, requirementsInFile, prefix)
 
-            if (line.isCommentLineWithControlPrefix() && !descriptionStarted) {
-                descriptionStarted = true
-                continue
-            } else if (line.isCommentLineWithControlPrefix()) {
-                descriptionBuilder.append(line.removeCommentAndControlPrefix().trim())
-            } else if (descriptionStarted && line.isCommentLine()) {
-                descriptionBuilder.append(" ").append(line.removeCommentPrefix().trim())
-            } else if (descriptionStarted && (line.isEmpty() || !line.isCommentLine())) {
-                break
+            when {
+                line.isCommentLineWithControlPrefix(prefix) && !descriptionStarted -> {
+                    descriptionStarted = true
+                }
+                line.isCommentLineWithControlPrefix(prefix) -> {
+                    descriptionBuilder.append(line.removeCommentAndControlPrefix(prefix).trim())
+                }
+                descriptionStarted && (line.isEmpty() || !line.isCommentLine(prefix) || line.contains(startTag)) -> {
+                    break
+                }
+                descriptionStarted && line.isCommentLine(prefix) -> {
+                    descriptionBuilder.append(" ").append(line.removeCommentPrefix(prefix).trim())
+                }
             }
         }
 
@@ -167,51 +200,10 @@ class RequirementExtractor {
         return requirementsWithDesc.toMap()
     }
 
-    private fun extractAdditionalRequirements(line: String, requirementsInFile: MutableList<String>) {
-        if (line.isCommentLine() && !line.hasControlPrefix()) {
-            requirementsInFile.addAll(line.removeCommentPrefix().trim().mapCommaSeparatedValues())
-        }
-    }
-
-    private fun String.isCommentLine(): Boolean {
-        val trimmedLine = this.trim()
-        return trimmedLine.startsWith(prefix)
-    }
-
-    private fun String.isCommentLineWithControlPrefix(): Boolean {
-        val trimmedLine = this.trim()
-        return trimmedLine.isCommentLine() && trimmedLine.contains("|")
-    }
-
-    private fun String.hasControlPrefix(): Boolean {
-        return this.contains("|")
-    }
-
-    private fun String.splitByColonAndMapCommaSeparatedValues(): List<String> {
-        return this.splitByColon().mapCommaSeparatedValues()
-    }
-
-    private fun String.mapCommaSeparatedValues(): List<String> {
-        return this.split(",").map { it.trim() }.filter { it.isNotEmpty() }
-    }
-
-    private fun String.splitByColon(): String {
-        return this.split(":")[1].trim()
-    }
-
-    private fun String.removeCommentAndControlPrefix() : String {
-        return this.removeCommentPrefix().trim().removePrefix("|").trim()
-    }
-
-    private fun String.removeCommentPrefix(): String {
-        val trimmed = this.trim()
-            if (trimmed.startsWith(prefix)) {
-                return trimmed.removePrefix(prefix).trim()
-            }
-        return this
-    }
-
-    fun writeToCsv(requirements: List<Requirement>, outputFilePath: String) {
+    fun writeToCsv(
+        requirements: List<Requirement>,
+        outputFilePath: String,
+    ) {
         csvWriter {
             delimiter = ';'
         }.open(outputFilePath) {

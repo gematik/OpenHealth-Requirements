@@ -22,21 +22,21 @@ Requirements must follow a structured format within comments.
 ```kotlin
 fun exampleFunction() = println("Hello, world!")
 
-// REQ-BEGIN: GS-A_1234, GS-A_5678
-// | gemSpec_Example
+// REQ-BEGIN: A_1234, A_5678
+// | example_spec
 // | This function prints a greeting.
 fun greetUser() = println("Hello, User!")
-// REQ-END: GS-A_1234, GS-A_5678
+// REQ-END: A_1234, A_5678
 ```
 
 
 ### ✅ Breakdown:
-| Part | Meaning |
-|------|---------|
-| `REQ-BEGIN: GS-A_1234, GS-A_5678` | Start of requirement annotations, listing requirement IDs |
-| `| gemSpec_Example` | Specification name |
-| `| This function prints a greeting.` | Description of how the code fulfills the requirement |
-| `REQ-END: GS-A_1234, GS-A_5678` | End of requirement block |
+| Part | Meaning                                                   |
+|------|-----------------------------------------------------------|
+| `REQ-BEGIN: A_1234, A_5678` | Start of requirement annotations, listing requirement IDs |
+| `| example_spec`                                             | Specification name |
+| `| This function prints a greeting.`                         | Description of how the code fulfills the requirement |
+| `REQ-END: A_1234, A_5678` | End of requirement block                                  |
 
 ---
 
@@ -79,7 +79,6 @@ plugins {
 }
 ```
 
-
 ### 🔧 Configure in `gradle.properties`
 ```properties
 requirementScanDir=.
@@ -100,7 +99,7 @@ This generates a CSV file (`requirements.csv`) in the project root.
 ## 📂 CSV Output Format
 | Requirement ID | Specification | Description | File Path | Start Line | End Line |
 |---------------|--------------|-------------|-----------|------------|----------|
-| GS-A_1234 | gemSpec_Example | This function prints a greeting. | /path/to/file.kt | 5 | 8 |
+| A_1234 | example_spec | This function prints a greeting. | /path/to/file.kt | 5 | 8 |
 
 ---
 
@@ -112,5 +111,15 @@ Feel free to submit pull requests or issues!
 
 
 ## 🔗 License
-TODO: Add license information
+Copyright 2025 gematik GmbH
+
+Licensed under the Apache License, Version 2.0 (the "License"); 
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+
 ```

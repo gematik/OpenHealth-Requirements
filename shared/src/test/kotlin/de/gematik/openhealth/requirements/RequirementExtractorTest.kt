@@ -1,3 +1,19 @@
+/*
+ * Copyright 2025 gematik GmbH
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package de.gematik.openhealth.requirements
 
 import kotlin.test.Test
@@ -8,11 +24,12 @@ class RequirementExtractorTest {
 
     @Test
     fun `no requirements in file`() {
-        val source = """
+        val source =
+            """
             ...
             fun unrelatedFunction() = println("Nothing to see here.")
             ...
-        """.trimIndent()
+            """.trimIndent()
 
         val requirements = extractor.extractRequirements(sequenceOf(Pair(source, "path")), "//")
 
@@ -21,7 +38,8 @@ class RequirementExtractorTest {
 
     @Test
     fun `single requirement with one ID`() {
-        val source = """
+        val source =
+            """
             import kotlin.io.path.createTempFile
             
             fun exampleFunction() = println("Hello, world!")
@@ -32,7 +50,7 @@ class RequirementExtractorTest {
             fun anotherExampleFunction() = println("Hello, world!")
             // REQ-END: GS-A_1234
 
-        """.trimIndent()
+            """.trimIndent()
         val requirements = extractor.extractRequirements(sequenceOf(Pair(source, "path")), "//")
 
         assertEquals(1, requirements.size)
@@ -47,7 +65,8 @@ class RequirementExtractorTest {
 
     @Test
     fun `single requirement within function `() {
-        val source = """
+        val source =
+            """
             import kotlin.io.path.createTempFile
             
             fun exampleFunction() : Int = {
@@ -60,7 +79,7 @@ class RequirementExtractorTest {
                 // REQ-END: GS-A_1234
                 return c
             }
-        """.trimIndent()
+            """.trimIndent()
         val requirements = extractor.extractRequirements(sequenceOf(Pair(source, "path")), "//")
 
         assertEquals(1, requirements.size)
@@ -75,7 +94,8 @@ class RequirementExtractorTest {
 
     @Test
     fun `single requirement with multiple IDs`() {
-        val source = """
+        val source =
+            """
             import kotlin.io.path.createTempFile
             fun exampleFunction1() = println("Hello, world!")
             
@@ -88,7 +108,7 @@ class RequirementExtractorTest {
             fun anotherExampleFunction() = println("Goodbye!")
             // REQ-END: GS-A_5678
             
-        """.trimIndent()
+            """.trimIndent()
 
         val requirements = extractor.extractRequirements(sequenceOf(Pair(source, "path")), "//")
 
@@ -111,7 +131,8 @@ class RequirementExtractorTest {
 
     @Test
     fun `single requirement with more multiple IDs`() {
-        val source = """
+        val source =
+            """
             import kotlin.io.path.createTempFile
             fun exampleFunction1() = println("Hello, world!")
             
@@ -126,7 +147,7 @@ class RequirementExtractorTest {
             fun anotherExampleFunction() = println("Goodbye!")
             // REQ-END: GS-A_5678,   GS-A_91011,  GS-A_121314, GS-A_151617,   GS-A_181920
             
-        """.trimIndent()
+            """.trimIndent()
         val requirements = extractor.extractRequirements(sequenceOf(Pair(source, "path")), "//")
 
         assertEquals(6, requirements.size)
@@ -174,10 +195,10 @@ class RequirementExtractorTest {
         assertEquals(11, requirement6.endLine)
     }
 
-
     @Test
     fun `multi-line description`() {
-        val source = """
+        val source =
+            """
             import kotlin.io.path.createTempFile
             
             fun exampleFunction1() = println("Hello, world!")
@@ -189,7 +210,7 @@ class RequirementExtractorTest {
             // And even more details.
             fun anotherExample() = println("Goodbye!")
             // REQ-END: GS-A_91011
-        """.trimIndent()
+            """.trimIndent()
 
         val requirements = extractor.extractRequirements(sequenceOf(Pair(source, "path")), "//")
 
@@ -199,8 +220,8 @@ class RequirementExtractorTest {
         assertEquals("gemSpec_Example", requirement.spec)
         assertEquals(
             "This is a multi-line description. " +
-                    "It includes more details across multiple lines. And even more details.",
-            requirement.desc
+                "It includes more details across multiple lines. And even more details.",
+            requirement.desc,
         )
         assertEquals(9, requirement.startLine)
         assertEquals(9, requirement.endLine)
@@ -208,7 +229,8 @@ class RequirementExtractorTest {
 
     @Test
     fun `multi-line description with multi-line function`() {
-        val source = """
+        val source =
+            """
             import kotlin.io.path.createTempFile
             
             fun exampleFunction1() = println("Hello, world!")
@@ -222,7 +244,7 @@ class RequirementExtractorTest {
                 println("Goodbye again!")
             }
             // REQ-END: GS-A_91011
-        """.trimIndent()
+            """.trimIndent()
 
         val requirements = extractor.extractRequirements(sequenceOf(Pair(source, "path")), "//")
 
@@ -232,7 +254,7 @@ class RequirementExtractorTest {
         assertEquals("gemSpec_Example", requirement.spec)
         assertEquals(
             "This is a multi-line description. It includes more details across multiple lines.",
-            requirement.desc
+            requirement.desc,
         )
         assertEquals(8, requirement.startLine)
         assertEquals(11, requirement.endLine)
@@ -240,7 +262,8 @@ class RequirementExtractorTest {
 
     @Test
     fun `multiple requirements in one file`() {
-        val source = """
+        val source =
+            """
             import kotlin.io.path.createTempFile
             
             fun exampleFunction() = println("Hello, world!")
@@ -258,7 +281,7 @@ class RequirementExtractorTest {
             // | Second description.
             fun exampleFunction2() = println("Goodbye! + a")
             // REQ-END: GS-A_5678
-        """.trimIndent()
+            """.trimIndent()
 
         val requirements = extractor.extractRequirements(sequenceOf(Pair(source, "path")), "//")
 
@@ -280,11 +303,52 @@ class RequirementExtractorTest {
     }
 
     @Test
+    fun `requirement followed by another requirement`() {
+        val source =
+            """
+            import kotlin.io.path.createTempFile
+            
+            fun exampleFunction() = println("Hello, world!")
+            
+            // REQ-BEGIN: GS-A_1234
+            // | gemSpec_Example
+            // | First description is a multiline
+            // description.
+            // REQ-BEGIN: GS-A_5678
+            // | gemSpec_Other
+            // | Second description.
+            fun String.exampleFunction1() = 
+                this.split(" ").forEach(::println)
+            // REQ-END: GS-A_1234, GS-A_5678
+            fun exampleFunction2() = println("Goodbye! + a")
+            """.trimIndent()
+
+        val requirements = extractor.extractRequirements(sequenceOf(Pair(source, "path")), "//")
+
+        assertEquals(2, requirements.size)
+
+        val requirement1 = requirements[0]
+        assertEquals("GS-A_1234", requirement1.reqId)
+        assertEquals("gemSpec_Example", requirement1.spec)
+        assertEquals("First description is a multiline description.", requirement1.desc)
+        assertEquals(11, requirement1.startLine)
+        assertEquals(12, requirement1.endLine)
+
+        val requirement2 = requirements[1]
+        assertEquals("GS-A_5678", requirement2.reqId)
+        assertEquals("gemSpec_Other", requirement2.spec)
+        assertEquals("Second description.", requirement2.desc)
+        assertEquals(11, requirement2.startLine)
+        assertEquals(12, requirement2.endLine)
+    }
+
+    @Test
     fun `end tag without matching start tag should be ignored`() {
-        val source = """
+        val source =
+            """
             fun exampleFunction1() = println("Hello, world!")
             // REQ-END: GS-A_1234
-        """.trimIndent()
+            """.trimIndent()
 
         val requirements = extractor.extractRequirements(sequenceOf(Pair(source, "path")), "//")
 
@@ -293,12 +357,13 @@ class RequirementExtractorTest {
 
     @Test
     fun `start tag without end tag should be ignored`() {
-        val source = """
+        val source =
+            """
             // REQ-BEGIN: GS-A_1234
             // | gemSpec_Example
             // | This requirement has no end tag.
             fun exampleFunction1() = println("Hello, world!")
-        """.trimIndent()
+            """.trimIndent()
 
         val requirements = extractor.extractRequirements(sequenceOf(Pair(source, "path")), "//")
 
