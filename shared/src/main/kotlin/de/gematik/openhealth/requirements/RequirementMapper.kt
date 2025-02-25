@@ -10,6 +10,15 @@ fun String.isCommentLineWithControlPrefix(prefix: String): Boolean {
     return trimmedLine.isCommentLine(prefix) && trimmedLine.contains("|")
 }
 
+fun String.extractRequirements(): List<String> = this.split(":")[1].mapCommaSeparatedValues()
+
+fun List<String>.indexOfFirstNonCommentLine(startIndex: Int): Int? =
+    this
+        .drop(startIndex)
+        .indexOfFirst { it.isNotEmpty() && !it.isCommentLine("//") }
+        .takeIf { it != -1 }
+        ?.plus(startIndex)
+
 fun String.hasControlPrefix(): Boolean = this.contains("|")
 
 fun String.splitByColonAndMapCommaSeparatedValues(): List<String> = this.splitByColon().mapCommaSeparatedValues()

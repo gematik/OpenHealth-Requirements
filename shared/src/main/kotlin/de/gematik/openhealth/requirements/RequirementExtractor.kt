@@ -40,10 +40,10 @@ class RequirementExtractor {
         val requirements = mutableListOf<Requirement>()
 
         fileParameter.forEach { (content, path) ->
-            val requirementsWithStart = mutableMapOf<String, Int>()
-            val requirementsWithEnd = mutableMapOf<String, Int>()
-            val requirementsWithSpec = mutableMapOf<String, String>()
-            val requirementsWithDesc = mutableMapOf<String, String>()
+            val startPositions = mutableMapOf<String, Int>()
+            val endPositions = mutableMapOf<String, Int>()
+            val specifications = mutableMapOf<String, String>()
+            val descriptions = mutableMapOf<String, String>()
 
             val lines = content.lines()
             val beginLineIndices = mutableListOf<Int>()
@@ -59,19 +59,28 @@ class RequirementExtractor {
             }
 
             beginLineIndices.forEach { beginLineIndex ->
-                requirementsWithStart.putAll(mapStartPositions(lines, beginLineIndex))
-                requirementsWithSpec.putAll(mapRequirementSpecifications(lines, beginLineIndex))
-                requirementsWithDesc.putAll(mapRequirementDescriptions(lines, beginLineIndex))
+                startPositions.putAll(findStartPositions(lines, beginLineIndex))
+                specifications.putAll(findSpecifications(lines, beginLineIndex))
+                descriptions.putAll(findDescriptions(lines, beginLineIndex))
             }
 
             endLineIndices.forEach { endLineIndex ->
-                requirementsWithEnd.putAll(mapEndPositions(lines, endLineIndex))
+                endPositions.putAll(findEndPositions(lines, endLineIndex))
             }
 
-            requirementsWithStart.forEach { (requirement, startLine) ->
-                val spec = requirementsWithSpec[requirement]
-                val desc = requirementsWithDesc[requirement] ?: ""
-                val endLine = requirementsWithEnd[requirement]
+            val startKeys = startPositions.keys
+            val endKeys = endPositions.keys
+
+            val missingEndKeys = startKeys - endKeys
+            val missingStartKeys = endKeys - startKeys
+
+            check(missingEndKeys.isEmpty()) { "Missing end tags for requirements: $missingEndKeys" }
+            check(missingStartKeys.isEmpty()) { "Missing start tags for requirements: $missingStartKeys" }
+
+            startPositions.forEach { (requirement, startLine) ->
+                val spec = specifications[requirement]
+                val desc = descriptions[requirement] ?: ""
+                val endLine = endPositions[requirement]
 
                 if (spec != null && endLine != null) {
                     requirements.add(Requirement(requirement, spec, desc, path, startLine, endLine))
@@ -81,18 +90,22 @@ class RequirementExtractor {
         return requirements
     }
 
-    private fun mapStartPositions(
+    private fun findStartPositions(
         lines: List<String>,
         beginLineIndex: Int,
     ): Map<String, Int> {
         val requirementsWithStart = mutableMapOf<String, Int>()
-        val requirementsInFile = lines[beginLineIndex].splitByColonAndMapCommaSeparatedValues().toMutableList()
+        val requirementsInFile = lines[beginLineIndex].extractRequirements().toMutableList()
         var firstNonCommentLineIndex: Int? = null
+        var firstControlPrefixFound = false
 
         for (i in beginLineIndex + 1 until lines.size) {
             val line = lines[i].trim()
+            if (line.hasControlPrefix()) {
+                firstControlPrefixFound = true
+            }
 
-            if (line.isCommentLine(prefix) && !line.hasControlPrefix()) {
+            if (line.isCommentLine(prefix) && !line.hasControlPrefix() && !firstControlPrefixFound) {
                 requirementsInFile.addAll(line.removeCommentPrefix(prefix).trim().mapCommaSeparatedValues())
             } else if (line.isNotEmpty() && !line.isCommentLine(prefix)) {
                 firstNonCommentLineIndex = i
@@ -106,7 +119,7 @@ class RequirementExtractor {
         return requirementsWithStart.toMap()
     }
 
-    private fun mapEndPositions(
+    private fun findEndPositions(
         lines: List<String>,
         endLineIndex: Int,
     ): Map<String, Int> {
@@ -122,19 +135,30 @@ class RequirementExtractor {
             }
         }
 
-        val requirementKeys = lines[endLineIndex].splitByColonAndMapCommaSeparatedValues()
+        val requirementKeys = lines[endLineIndex].extractRequirements().toMutableList()
+
+        for (i in endLineIndex + 1 until lines.size) {
+            val line = lines[i].trim()
+
+            if (line.isCommentLine(prefix) && !line.hasControlPrefix()) {
+                requirementKeys.addAll(line.removeCommentPrefix(prefix).trim().mapCommaSeparatedValues())
+            } else {
+                break
+            }
+        }
+
         requirementKeys.associateWithTo(requirementsWithEnd) {
             lastNonCommentLineIndex ?: endLineIndex
         }
-        return requirementsWithEnd.toMap()
+        return requirementsWithEnd
     }
 
-    private fun mapRequirementSpecifications(
+    private fun findSpecifications(
         lines: List<String>,
         beginLineIndex: Int,
     ): Map<String, String> {
         val requirementsWithSpec = mutableMapOf<String, String>()
-        val requirementsInFile = lines[beginLineIndex].splitByColonAndMapCommaSeparatedValues().toMutableList()
+        val requirementsInFile = lines[beginLineIndex].extractRequirements().toMutableList()
 
         for (i in beginLineIndex + 1 until lines.size) {
             val line = lines[i].trim()
@@ -160,7 +184,7 @@ class RequirementExtractor {
         }
     }
 
-    private fun mapRequirementDescriptions(
+    private fun findDescriptions(
         lines: List<String>,
         beginLineIndex: Int,
     ): Map<String, String> {

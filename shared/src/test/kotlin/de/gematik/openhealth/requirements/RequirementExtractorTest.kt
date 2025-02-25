@@ -18,6 +18,7 @@ package de.gematik.openhealth.requirements
 
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
 
 class RequirementExtractorTest {
     private val extractor = RequirementExtractor()
@@ -145,7 +146,8 @@ class RequirementExtractorTest {
             // REQ-END: GS-A_1234
             
             fun anotherExampleFunction() = println("Goodbye!")
-            // REQ-END: GS-A_5678,   GS-A_91011,  GS-A_121314, GS-A_151617,   GS-A_181920
+            // REQ-END: GS-A_5678,   GS-A_91011,  
+            // GS-A_121314, GS-A_151617,   GS-A_181920
             
             """.trimIndent()
         val requirements = extractor.extractRequirements(sequenceOf(Pair(source, "path")), "//")
@@ -350,13 +352,15 @@ class RequirementExtractorTest {
             // REQ-END: GS-A_1234
             """.trimIndent()
 
-        val requirements = extractor.extractRequirements(sequenceOf(Pair(source, "path")), "//")
-
-        assertEquals(0, requirements.size)
+        val exception =
+            assertFailsWith<IllegalStateException> {
+                extractor.extractRequirements(sequenceOf(Pair(source, "path")), "//")
+            }
+        assertEquals("Missing start tags for requirements: [GS-A_1234]", exception.message)
     }
 
     @Test
-    fun `start tag without end tag should be ignored`() {
+    fun `start tag without end tag should throw exception`() {
         val source =
             """
             // REQ-BEGIN: GS-A_1234
@@ -365,8 +369,11 @@ class RequirementExtractorTest {
             fun exampleFunction1() = println("Hello, world!")
             """.trimIndent()
 
-        val requirements = extractor.extractRequirements(sequenceOf(Pair(source, "path")), "//")
+        val exception =
+            assertFailsWith<IllegalStateException> {
+                extractor.extractRequirements(sequenceOf(Pair(source, "path")), "//")
+            }
 
-        assertEquals(0, requirements.size)
+        assertEquals("Missing end tags for requirements: [GS-A_1234]", exception.message)
     }
 }
