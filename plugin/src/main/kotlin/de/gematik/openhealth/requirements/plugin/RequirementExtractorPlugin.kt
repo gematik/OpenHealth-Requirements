@@ -20,6 +20,7 @@ import de.gematik.openhealth.requirements.RequirementExtractor
 import org.gradle.api.DefaultTask
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.gradle.api.file.ConfigurableFileTree
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.Optional
 import org.gradle.api.tasks.TaskAction
@@ -34,7 +35,7 @@ class RequirementExtractorPlugin : Plugin<Project> {
 abstract class ExtractRequirementsTask : DefaultTask() {
     @Input
     @Optional
-    var scanDirectory: String = project.findProperty("requirementScanDir") as? String ?: "."
+    var filesToScan: ConfigurableFileTree = project.fileTree(".")
 
     @Input
     @Optional
@@ -45,7 +46,6 @@ abstract class ExtractRequirementsTask : DefaultTask() {
     var outputFile: String = project.findProperty("requirementOutputFile") as? String ?: "requirements.csv"
 
     private val rootPath: File = project.rootDir
-    private val filesToScan: Set<File> = project.fileTree(scanDirectory).files
 
     @TaskAction
     fun run() {

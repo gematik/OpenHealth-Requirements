@@ -6,7 +6,6 @@ pluginManagement {
         mavenCentral()
         gradlePluginPortal()
     }
-    // includeBuild("requirement-extractor-plugin")
 }
 
 dependencyResolutionManagement {
