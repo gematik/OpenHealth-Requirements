@@ -17,30 +17,38 @@
 import com.vanniktech.maven.publish.SonatypeHost
 
 plugins {
-    application
     alias(libs.plugins.kotlin.jvm)
     alias(libs.plugins.vanniktech.mavenPublish)
+    `java-gradle-plugin`
 }
 
-application {
-    mainClass.set("de.gematik.openhealth.reguirements.Main.kt")
-}
+group = project.findProperty("gematik.baseGroup") as String
+version = project.findProperty("gematik.version") as String
 
-dependencies {
-    implementation(project(":shared"))
-    implementation(libs.kotlin.clikt)
+gradlePlugin {
+    website = "https://github.com/gematik/OpenHealth-Requirements"
+    vcsUrl = "https://github.com/gematik/OpenHealth-Requirements.git"
+    plugins {
+        create("requirementExtractorPlugin") {
+            id = "de.gematik.openhealth.requirements"
+            implementationClass = "de.gematik.openhealth.requirements.plugin.RequirementExtractorPlugin"
+            displayName = "OpenHealth Requirement Extractor Plugin"
+            description = "A plugin to extract and manage requirements"
+            tags = listOf("requirements", "extractor", "parser", "gematik", "openhealth")
+        }
+    }
 }
 
 mavenPublishing {
     publishToMavenCentral(SonatypeHost.CENTRAL_PORTAL)
 
-//    signAllPublications()
+    // signAllPublications()
 
     coordinates(group.toString(), "requirements", version.toString())
 
     pom {
-        name = "OpenHealth Requirements"
-        description = "OpenHealth Requirements"
+        name = "OpenHealth Requirements Plugin"
+        description = "A plugin to extract and manage requirements"
         inceptionYear = "2025"
         url = "https://github.com/gematik/OpenHealth-Requirements"
         licenses {
@@ -56,10 +64,9 @@ mavenPublishing {
                 url = "https://github.com/gematik"
             }
         }
-        scm {
-            url = "https://github.com/gematik/OpenHealth-Requirements"
-            connection = "scm:git:https://github.com/gematik/OpenHealth-Requirements.git"
-            developerConnection = "scm:git:https://github.com/gematik/OpenHealth-Requirements.git"
-        }
     }
+}
+
+dependencies {
+    implementation(project(":core"))
 }

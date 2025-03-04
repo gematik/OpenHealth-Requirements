@@ -18,19 +18,23 @@ import com.vanniktech.maven.publish.SonatypeHost
 
 plugins {
     alias(libs.plugins.kotlin.jvm)
-    `java-gradle-plugin`
     alias(libs.plugins.vanniktech.mavenPublish)
 }
 
 group = project.findProperty("gematik.baseGroup") as String
 version = project.findProperty("gematik.version") as String
 
-gradlePlugin {
-    plugins {
-        create("requirementExtractorPlugin") {
-            id = "de.gematik.openhealth.requirements.plugin"
-            implementationClass = "de.gematik.openhealth.requirements.plugin.RequirementExtractorPlugin"
-            version = "1.0.0"
+kotlin {
+    sourceSets {
+        val main by getting {
+            dependencies {
+                implementation(libs.doyaaaaaken.csv)
+            }
+        }
+        val test by getting {
+            dependencies {
+                implementation(libs.kotlin.test)
+            }
         }
     }
 }
@@ -38,13 +42,13 @@ gradlePlugin {
 mavenPublishing {
     publishToMavenCentral(SonatypeHost.CENTRAL_PORTAL)
 
-//    signAllPublications()
+    // signAllPublications()
 
-    coordinates(group.toString(), "requirements-plugin", version.toString())
+    coordinates(group.toString(), "core", version.toString())
 
     pom {
-        name = "OpenHealth Requirements Plugin"
-        description = "OpenHealth Requirements Plugin"
+        name = "OpenHealth Requirements Core Library"
+        description = "Core library for extracting and managing requirements"
         inceptionYear = "2025"
         url = "https://github.com/gematik/OpenHealth-Requirements"
         licenses {
@@ -60,28 +64,5 @@ mavenPublishing {
                 url = "https://github.com/gematik"
             }
         }
-        scm {
-            url = "https://github.com/gematik/OpenHealth-Requirements"
-            connection = "scm:git:https://github.com/gematik/OpenHealth-Requirements.git"
-            developerConnection = "scm:git:https://github.com/gematik/OpenHealth-Requirements.git"
-        }
     }
-}
-
-// publishing {
-//    publications {
-//        create<MavenPublication>("mavenJava") {
-//            from(components["java"])
-//            groupId = "de.gematik.openhealth"
-//            artifactId = "requirement-extractor-plugin"
-//            version = "1.0.0"
-//        }
-//    }
-//    repositories {
-//        mavenLocal()
-//    }
-// }
-
-dependencies {
-    implementation(project(":shared"))
 }

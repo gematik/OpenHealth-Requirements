@@ -1,10 +1,10 @@
 # OpenHealth Requirements
 
-## ✨ Overview
+## Overview
 OpenHealth Requirements scans source files for structured requirement annotations and extracts them into a structured CSV file. It is available as both a **Gradle plugin** and a **standalone CLI executable**.
 
 
-## ✅ Features
+## Features
 - Extracts structured requirements from code comments
 - Supports **configurable comment prefixes** (e.g., `//`, `#`, etc.)
 - Works with **any file type**
@@ -14,11 +14,11 @@ OpenHealth Requirements scans source files for structured requirement annotation
 ---
 
 
-## 📚 Requirement Format
+## Requirement Format
 Requirements must follow a structured format within comments.
 
 
-### ✨ Example Requirement
+### Example Requirement
 ```kotlin
 fun exampleFunction() = println("Hello, world!")
 
@@ -30,7 +30,7 @@ fun greetUser() = println("Hello, User!")
 ```
 
 
-### ✅ Breakdown:
+### Breakdown:
 | Part | Meaning                                                   |
 |------|-----------------------------------------------------------|
 | `REQ-BEGIN: A_1234, A_5678` | Start of requirement annotations, listing requirement IDs |
@@ -41,11 +41,11 @@ fun greetUser() = println("Hello, User!")
 ---
 
 
-# 🛠️ Using the Requirement Extractor
+# Using the Requirement Extractor
 
-## 💻 CLI Executable
+## CLI Executable
 
-### 🔍 Available Options:
+### Available Options:
 ```sh
 java -jar requirement-extractor.jar --scan-dir <directory> --comment-prefix <prefix> --output <output.csv>
 ```
@@ -68,10 +68,9 @@ java -jar requirement-extractor.jar --scan-dir src --comment-prefix "#" --output
 
 ---
 
+## Gradle Plugin
 
-## 🌱 Gradle Plugin
-
-### 🗂 Apply Plugin
+### Apply Plugin
 Add the plugin to your `build.gradle.kts`:
 ```kotlin
 plugins {
@@ -79,7 +78,7 @@ plugins {
 }
 ```
 
-### 🔧 Configure in `gradle.properties`
+### Configure in `gradle.properties`
 ```properties
 requirementScanDir=.
 requirementCommentPrefix=//
@@ -87,7 +86,7 @@ requirementOutputFile=requirements.csv
 ```
 
 
-### 🌟 Run Extraction
+### Run Extraction
 ```sh
 ./gradlew extractRequirements
 ```
@@ -96,7 +95,7 @@ This generates a CSV file (`requirements.csv`) in the project root.
 
 ---
 
-## 📂 CSV Output Format
+## CSV Output Format
 | Requirement ID | Specification | Description | File Path | Start Line | End Line |
 |---------------|--------------|-------------|-----------|------------|----------|
 | A_1234 | example_spec | This function prints a greeting. | /path/to/file.kt | 5 | 8 |
@@ -104,13 +103,13 @@ This generates a CSV file (`requirements.csv`) in the project root.
 ---
 
 
-## 🚀 Contributing
+## Contributing
 Feel free to submit pull requests or issues!
 
 ---
 
 
-## 🔗 License
+## License
 Copyright 2025 gematik GmbH
 
 Licensed under the Apache License, Version 2.0 (the "License"); 

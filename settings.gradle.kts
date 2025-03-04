@@ -15,4 +15,4 @@ dependencyResolutionManagement {
     }
 }
 
-include(":shared", ":plugin", ":executable")
+include(":core", ":gradle-plugin", ":cli")
