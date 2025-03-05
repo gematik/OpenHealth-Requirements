@@ -16,6 +16,7 @@
 
 package de.gematik.openhealth.requirements.plugin
 
+import de.gematik.openhealth.requirements.FileContent
 import de.gematik.openhealth.requirements.RequirementExtractor
 import org.gradle.api.DefaultTask
 import org.gradle.api.Plugin
@@ -54,7 +55,7 @@ abstract class ExtractRequirementsTask : DefaultTask() {
         val files =
             filesToScan
                 .map { file ->
-                    file.readText() to file.relativeTo(rootPath).path
+                    FileContent(path = file.relativeTo(rootPath).path, content = file.readText())
                 }.asSequence()
 
         val requirements = extractor.extractRequirements(files, commentPrefix)

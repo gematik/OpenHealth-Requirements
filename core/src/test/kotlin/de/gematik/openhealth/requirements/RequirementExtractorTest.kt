@@ -32,7 +32,7 @@ class RequirementExtractorTest {
             ...
             """.trimIndent()
 
-        val requirements = extractor.extractRequirements(sequenceOf(Pair(source, "path")), "//")
+        val requirements = extractor.extractRequirements(sequenceOf(FileContent(path = "path", content = source)), "//")
 
         assertEquals(0, requirements.size)
     }
@@ -52,7 +52,7 @@ class RequirementExtractorTest {
             // REQ-END: GS-A_1234
 
             """.trimIndent()
-        val requirements = extractor.extractRequirements(sequenceOf(Pair(source, "path")), "//")
+        val requirements = extractor.extractRequirements(sequenceOf(FileContent(path = "path", content = source)), "//")
 
         assertEquals(1, requirements.size)
         val requirement = requirements.first()
@@ -81,7 +81,7 @@ class RequirementExtractorTest {
                 return c
             }
             """.trimIndent()
-        val requirements = extractor.extractRequirements(sequenceOf(Pair(source, "path")), "//")
+        val requirements = extractor.extractRequirements(sequenceOf(FileContent(path = "path", content = source)), "//")
 
         assertEquals(1, requirements.size)
         val requirement = requirements.first()
@@ -111,7 +111,7 @@ class RequirementExtractorTest {
             
             """.trimIndent()
 
-        val requirements = extractor.extractRequirements(sequenceOf(Pair(source, "path")), "//")
+        val requirements = extractor.extractRequirements(sequenceOf(FileContent(path = "path", content = source)), "//")
 
         assertEquals(2, requirements.size)
 
@@ -150,7 +150,7 @@ class RequirementExtractorTest {
             // GS-A_121314, GS-A_151617,   GS-A_181920
             
             """.trimIndent()
-        val requirements = extractor.extractRequirements(sequenceOf(Pair(source, "path")), "//")
+        val requirements = extractor.extractRequirements(sequenceOf(FileContent(path = "path", content = source)), "//")
 
         assertEquals(6, requirements.size)
 
@@ -214,7 +214,7 @@ class RequirementExtractorTest {
             // REQ-END: GS-A_91011
             """.trimIndent()
 
-        val requirements = extractor.extractRequirements(sequenceOf(Pair(source, "path")), "//")
+        val requirements = extractor.extractRequirements(sequenceOf(FileContent(path = "path", content = source)), "//")
 
         assertEquals(1, requirements.size)
         val requirement = requirements.first()
@@ -248,7 +248,7 @@ class RequirementExtractorTest {
             // REQ-END: GS-A_91011
             """.trimIndent()
 
-        val requirements = extractor.extractRequirements(sequenceOf(Pair(source, "path")), "//")
+        val requirements = extractor.extractRequirements(sequenceOf(FileContent(path = "path", content = source)), "//")
 
         assertEquals(1, requirements.size)
         val requirement = requirements.first()
@@ -285,7 +285,7 @@ class RequirementExtractorTest {
             // REQ-END: GS-A_5678
             """.trimIndent()
 
-        val requirements = extractor.extractRequirements(sequenceOf(Pair(source, "path")), "//")
+        val requirements = extractor.extractRequirements(sequenceOf(FileContent(path = "path", content = source)), "//")
 
         assertEquals(2, requirements.size)
 
@@ -325,7 +325,7 @@ class RequirementExtractorTest {
             fun exampleFunction2() = println("Goodbye! + a")
             """.trimIndent()
 
-        val requirements = extractor.extractRequirements(sequenceOf(Pair(source, "path")), "//")
+        val requirements = extractor.extractRequirements(sequenceOf(FileContent(path = "path", content = source)), "//")
 
         assertEquals(2, requirements.size)
 
@@ -354,7 +354,7 @@ class RequirementExtractorTest {
 
         val exception =
             assertFailsWith<IllegalStateException> {
-                extractor.extractRequirements(sequenceOf(Pair(source, "path")), "//")
+                extractor.extractRequirements(sequenceOf(FileContent(path = "path", content = source)), "//")
             }
         assertEquals("Missing start tags for requirements: [GS-A_1234]", exception.message)
     }
@@ -371,7 +371,7 @@ class RequirementExtractorTest {
 
         val exception =
             assertFailsWith<IllegalStateException> {
-                extractor.extractRequirements(sequenceOf(Pair(source, "path")), "//")
+                extractor.extractRequirements(sequenceOf(FileContent(path = "path", content = source)), "//")
             }
 
         assertEquals("Missing end tags for requirements: [GS-A_1234]", exception.message)

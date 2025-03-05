@@ -20,7 +20,7 @@ plugins {
 }
 
 application {
-    mainClass.set("de.gematik.openhealth.reguirements.Main.kt")
+    mainClass = "de.gematik.openhealth.requirements.MainKt"
 }
 
 dependencies {

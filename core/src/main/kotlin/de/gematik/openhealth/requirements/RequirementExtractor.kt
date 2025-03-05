@@ -27,19 +27,24 @@ data class Requirement(
     val endLine: Int?,
 )
 
+data class FileContent(
+    val path: String,
+    val content: String,
+)
+
 class RequirementExtractor {
     private val startTag = "REQ-BEGIN"
     private val endTag = "REQ-END"
     private var prefix = "//"
 
     fun extractRequirements(
-        fileParameter: Sequence<Pair<String, String>>,
+        fileParameter: Sequence<FileContent>,
         commentPrefix: String,
     ): List<Requirement> {
         prefix = commentPrefix.trim()
         val requirements = mutableListOf<Requirement>()
 
-        fileParameter.forEach { (content, path) ->
+        fileParameter.forEach { (path, content) ->
             val startPositions = mutableMapOf<String, Int>()
             val endPositions = mutableMapOf<String, Int>()
             val specifications = mutableMapOf<String, String>()
