@@ -22,11 +22,11 @@ Requirements must follow a structured format within comments.
 ```kotlin
 fun exampleFunction() = println("Hello, world!")
 
-// REQ-BEGIN: A_1234, A_5678
+// REQ-BEGIN: A_12345, A_5678
 // | example_spec
 // | This function prints a greeting.
 fun greetUser() = println("Hello, User!")
-// REQ-END: A_1234, A_5678
+// REQ-END: A_12345, A_5678
 ```
 
 ### Breakdown:
