@@ -37,7 +37,7 @@ class RequirementExtractorPlugin : Plugin<Project> {
 abstract class ExtractRequirementsTask : DefaultTask() {
     @InputFiles
     @Optional
-    var filesToScan: ConfigurableFileTree = project.fileTree(".")
+    var fileTree: ConfigurableFileTree = project.fileTree(".")
 
     @Input
     @Optional
@@ -54,7 +54,7 @@ abstract class ExtractRequirementsTask : DefaultTask() {
         val extractor = RequirementExtractor()
 
         val files =
-            filesToScan
+            fileTree
                 .map { file ->
                     FileContent(path = file.relativeTo(rootPath).path, content = file.readText())
                 }.asSequence()
