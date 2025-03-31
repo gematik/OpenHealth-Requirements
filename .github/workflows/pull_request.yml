@@ -32,6 +32,9 @@ jobs:
           
     - name: Check Code Style
       run: ./gradlew ktlintCheck
+
+    - name: Run Detekt
+      run: ./gradlew detekt
       
     - name: Run Tests
       run: ./gradlew test
