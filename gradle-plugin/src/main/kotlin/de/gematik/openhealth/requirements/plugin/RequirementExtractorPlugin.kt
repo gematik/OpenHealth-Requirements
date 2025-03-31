@@ -26,6 +26,7 @@ import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.Optional
 import org.gradle.api.tasks.TaskAction
 import java.io.File
+import org.gradle.api.tasks.InputFiles
 
 class RequirementExtractorPlugin : Plugin<Project> {
     override fun apply(project: Project) {
@@ -34,7 +35,7 @@ class RequirementExtractorPlugin : Plugin<Project> {
 }
 
 abstract class ExtractRequirementsTask : DefaultTask() {
-    @Input
+    @InputFiles
     @Optional
     var filesToScan: ConfigurableFileTree = project.fileTree(".")
 
