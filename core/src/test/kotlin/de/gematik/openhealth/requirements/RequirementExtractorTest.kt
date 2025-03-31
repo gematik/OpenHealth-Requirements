@@ -85,7 +85,7 @@ class RequirementExtractorTest {
 
         assertEquals(1, requirements.size)
         val requirement = requirements.first()
-        assertEquals("GS-A_1234", requirement.reqId)
+        assertEquals("GS-A_12345", requirement.reqId)
         assertEquals("gemSpec_Example", requirement.spec)
         assertEquals("This is a single-line description.", requirement.desc)
         assertEquals("path", requirement.filePath)
