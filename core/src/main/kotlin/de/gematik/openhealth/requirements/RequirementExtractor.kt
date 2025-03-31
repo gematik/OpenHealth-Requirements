@@ -40,7 +40,6 @@ class RequirementExtractor {
     fun extractRequirements(
         fileParameter: Sequence<FileContent>,
         commentPrefix: String,
-
     ): List<Requirement> {
         prefix = commentPrefix.trim()
         val requirements = mutableListOf<Requirement>()
