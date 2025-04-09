@@ -19,7 +19,7 @@ import com.vanniktech.maven.publish.SonatypeHost
 plugins {
     alias(libs.plugins.kotlin.jvm)
     alias(libs.plugins.vanniktech.mavenPublish)
-    `java-gradle-plugin`
+    alias(libs.plugins.gradle.publish)
 }
 
 group = project.findProperty("gematik.baseGroup") as String
