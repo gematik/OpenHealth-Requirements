@@ -1,6 +1,5 @@
 plugins {
     alias(libs.plugins.kotlin.jvm)
-    alias(libs.plugins.vanniktech.mavenPublish) apply false
     alias(libs.plugins.detekt) apply true
 }
 
