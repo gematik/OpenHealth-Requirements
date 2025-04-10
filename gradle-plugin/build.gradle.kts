@@ -14,12 +14,9 @@
  * limitations under the License.
  */
 
-import com.vanniktech.maven.publish.SonatypeHost
-
 plugins {
     alias(libs.plugins.kotlin.jvm)
-    alias(libs.plugins.vanniktech.mavenPublish)
-    `java-gradle-plugin`
+    alias(libs.plugins.gradle.publish)
 }
 
 group = project.findProperty("gematik.baseGroup") as String
@@ -35,34 +32,6 @@ gradlePlugin {
             displayName = "OpenHealth Requirement Extractor Plugin"
             description = "A plugin to extract and manage requirements"
             tags = listOf("requirements", "extractor", "parser", "gematik", "openhealth")
-        }
-    }
-}
-
-mavenPublishing {
-    publishToMavenCentral(SonatypeHost.CENTRAL_PORTAL)
-
-    // signAllPublications()
-
-    coordinates(group.toString(), "requirements", version.toString())
-
-    pom {
-        name = "OpenHealth Requirements Plugin"
-        description = "A plugin to extract and manage requirements"
-        inceptionYear = "2025"
-        url = "https://github.com/gematik/OpenHealth-Requirements"
-        licenses {
-            license {
-                name = "Apache 2.0"
-                url = "https://www.apache.org/licenses/LICENSE-2.0.txt"
-                distribution = "repo"
-            }
-        }
-        developers {
-            developer {
-                name = "gematik GmbH"
-                url = "https://github.com/gematik"
-            }
         }
     }
 }
