@@ -1,3 +1,5 @@
+import com.vanniktech.maven.publish.SonatypeHost
+
 /*
  * Copyright 2025 gematik GmbH
  *
@@ -16,6 +18,7 @@
 
 plugins {
     alias(libs.plugins.kotlin.jvm)
+    alias(libs.plugins.vanniktech.mavenPublish)
 }
 
 group = project.findProperty("gematik.baseGroup") as String
@@ -32,6 +35,38 @@ kotlin {
             dependencies {
                 implementation(libs.kotlin.test)
             }
+        }
+    }
+}
+
+mavenPublishing {
+    publishToMavenCentral(SonatypeHost.DEFAULT)
+    signAllPublications()
+
+    coordinates(group.toString(), "requirements-core", version.toString())
+
+    pom {
+        name = "OpenHealth Requirements Plugin"
+        description = "OpenHealth Requirements Plugin"
+        inceptionYear = "2025"
+        url = "https://github.com/gematik/OpenHealth-Requirements"
+        licenses {
+            license {
+                name = "Apache 2.0"
+                url = "https://www.apache.org/licenses/LICENSE-2.0.txt"
+                distribution = "repo"
+            }
+        }
+        developers {
+            developer {
+                name = "gematik GmbH"
+                url = "https://github.com/gematik"
+            }
+        }
+        scm {
+            url = "https://github.com/gematik/OpenHealth-Requirements"
+            connection = "scm:git:https://github.com/gematik/OpenHealth-Requirements.git"
+            developerConnection = "scm:git:https://github.com/gematik/OpenHealth-Requirements.git"
         }
     }
 }
