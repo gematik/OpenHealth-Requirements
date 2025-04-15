@@ -24,19 +24,9 @@ plugins {
 group = project.findProperty("gematik.baseGroup") as String
 version = project.findProperty("gematik.version") as String
 
-kotlin {
-    sourceSets {
-        val main by getting {
-            dependencies {
-                implementation(libs.doyaaaaaken.csv)
-            }
-        }
-        val test by getting {
-            dependencies {
-                implementation(libs.kotlin.test)
-            }
-        }
-    }
+dependencies {
+    implementation(libs.doyaaaaaken.csv)
+    testImplementation(libs.kotlin.test)
 }
 
 mavenPublishing {
@@ -46,8 +36,8 @@ mavenPublishing {
     coordinates(group.toString(), "requirements-core", version.toString())
 
     pom {
-        name = "OpenHealth Requirements Plugin"
-        description = "OpenHealth Requirements Plugin"
+        name = "OpenHealth Requirements Core Library"
+        description = "OpenHealth Requirements Core Library"
         inceptionYear = "2025"
         url = "https://github.com/gematik/OpenHealth-Requirements"
         licenses {
