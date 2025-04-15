@@ -2,6 +2,7 @@
 kotlin = "2.1.0"
 clikt = "5.0.3"
 gradlePublish = "1.3.1"
+mavenPublish = "0.31.0"
 ktlint = "1.4.1"
 doyaaaaaken = "1.2.0"
 detekt = "1.23.7"
@@ -16,5 +17,6 @@ doyaaaaaken-csv = { module = "com.github.doyaaaaaken:kotlin-csv-jvm", version.re
 
 [plugins]
 gradle-publish = { id = "com.gradle.plugin-publish", version.ref = "gradlePublish" }
+vanniktech-mavenPublish = { id = "com.vanniktech.maven.publish", version.ref = "mavenPublish" }
 detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
