@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.kotlin.jvm)
     alias(libs.plugins.detekt) apply true
+    alias(libs.plugins.vanniktech.mavenPublish) apply false
 }
 
 group = project.findProperty("gematik.baseGroup") as String
