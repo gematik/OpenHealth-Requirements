@@ -1,6 +1,6 @@
 # ReleaseNotes
 
-This document summarizes the publicly released versions of the OpenHealth License Header Gradle plugin.
+This document summarizes the publicly released versions of the OpenHealth Requirements Gradle plugin.
 
 ## Release Overview
 

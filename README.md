@@ -73,7 +73,7 @@ Add the plugin to your `build.gradle.kts`:
 
 ```kotlin
 plugins {
-    id("de.gematik.openhealth.requirements") version "1.0.0"
+    id("de.gematik.openhealth.requirements") version "1.0.1"
 }
 ```
 
