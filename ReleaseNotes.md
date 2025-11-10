@@ -5,9 +5,9 @@ This document summarizes the publicly released versions of the OpenHealth Requir
 ## Release Overview
 
 | Version | Release Date | Highlights                                                                                                          |
-|--------|-------------|---------------------------------------------------------------------------------------------------------------------|
-| 1.0.0  | 2025-03-05  | Initial public release of the plugin |
-| 1.0.1  | 2025-04-16  | Gradle Plugin publishing                                                                                    |
+|--------|--------------|---------------------------------------------------------------------------------------------------------------------|
+| 1.0.0  | 2025-04-16   | Initial public release of the plugin |
+| 1.0.1  | 2025-03-05   | Gradle Plugin publishing                                                                                    |
 
 ## Change Log
 
